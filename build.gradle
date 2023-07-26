@@ -1,16 +1,20 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.1.2'
 	id 'io.spring.dependency-management' version '1.1.2'
-//	id 'org.springframework.boot' version '2.7.14'
-//	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
 group = 'net.flyinggroup'
 version = '0.0.1-SNAPSHOT'
 
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.boot:spring-boot-dependencies:3.0.0") // Fails
+		// mavenBom("org.springframework.boot:spring-boot-dependencies:2.7.14") // Works
+	}
+}
+
 java {
-	sourceCompatibility = JavaVersion.VERSION_20
+	sourceCompatibility = JavaVersion.VERSION_17
 }
 
 repositories {
@@ -18,16 +22,18 @@ repositories {
 }
 
 dependencies {
-	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.slf4j:slf4j-api'
+	implementation 'org.slf4j:slf4j-simple'
+	implementation 'org.springframework:spring-context'
+	implementation 'org.springframework:spring-webflux'
 
-	implementation 'org.projectlombok:lombok'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	runtimeOnly 'com.fasterxml.jackson.core:jackson-databind'
+	runtimeOnly 'jakarta.websocket:jakarta.websocket-api'
+	runtimeOnly 'jakarta.websocket:jakarta.websocket-client-api:2.1.1'
 
-	implementation "org.apache.commons:commons-lang3"
-
-	testAnnotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testImplementation 'org.springframework:spring-test'
 }
 
 tasks.named('test') {

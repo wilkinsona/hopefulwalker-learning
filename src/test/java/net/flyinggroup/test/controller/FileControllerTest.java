@@ -1,27 +1,32 @@
 package net.flyinggroup.test.controller;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.reactive.function.BodyInserters;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebFluxTest(controllers = {FileController.class})
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserters;
+
+import net.flyinggroup.test.TestApplication;
+
+@SpringJUnitConfig(TestApplication.class)
 class FileControllerTest {
+
     @Autowired
-    private WebTestClient webTestClient;
+    ApplicationContext context;
 
     @Test
     void uploadFile() throws IOException {
+        WebTestClient webTestClient = WebTestClient.bindToApplicationContext(context).build();
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         List<Path> paths = addTempFiles(builder, "files", 2);
         webTestClient.post()
@@ -49,4 +54,5 @@ class FileControllerTest {
     private void deleteTempFiles(List<Path> paths) throws IOException {
         for (Path path : paths) Files.deleteIfExists(path);
     }
+
 }
